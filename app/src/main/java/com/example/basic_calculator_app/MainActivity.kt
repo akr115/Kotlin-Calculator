@@ -95,12 +95,11 @@ class MainActivity : AppCompatActivity() {
                 evaluateExpression("%")
             }
         }
-        dot = true
     }
 
     fun buEqualEvent(view: View) {
-        resultExp = ExpressionBuilder(expressionSemantics).build()
         try {
+            resultExp = ExpressionBuilder(expressionSemantics).build()
             val result = resultExp.evaluate()
             val longResult = result.toLong()
             expressionSyntax = if (result == longResult.toDouble()) {
@@ -118,27 +117,52 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun buCleanEvent() {
+    fun buCleanEvent(view: View) {
         expressionSyntax = ""
         expressionSemantics = ""
+        dot = true
         update()
     }
 
     private fun evaluateExpression(s: String) {
-       if (s == "%"){
-            expressionSemantics += "/100"
-            expressionSyntax += "%"
-        } else if (s != "") {
-            expressionSyntax += s
-            expressionSemantics += s
-        }  else {
-           expressionSemantics = if(expressionSyntax.takeLast(1) == "%"){
-               expressionSemantics.dropLast(4)
-           } else {
-               expressionSemantics.dropLast(1)
-           }
-            expressionSyntax = expressionSyntax.dropLast(1)
+        when(s) {
+            "%" -> {
+                if (expressionSemantics != "" && expressionSemantics.last().isDigit()) {
+                    expressionSemantics += "/100"
+                    expressionSyntax += "%"
+                    dot = false
+                }
+            }
+            "" -> {
+                if (expressionSyntax.takeLast(1) == "."){
+                    dot = true
+                }
 
+                expressionSemantics = if (expressionSyntax.takeLast(1) == "%") {
+                    expressionSemantics.dropLast(4)
+                } else {
+                    expressionSemantics.dropLast(1)
+                }
+                expressionSyntax = expressionSyntax.dropLast(1)
+            }
+            "*", "+", "/" -> {
+                if (expressionSemantics != "" && expressionSemantics.last().isDigit()) {
+                    expressionSyntax += s
+                    expressionSemantics += s
+                    dot = true
+                }
+            }
+            "-" -> {
+                if(expressionSemantics == "" || expressionSemantics.last() == '*' || expressionSemantics.last() == '/' || expressionSemantics.last().isDigit()){
+                    expressionSyntax += s
+                    expressionSemantics += s
+                    dot = true
+                }
+            }
+            else -> {
+                 expressionSyntax += s
+                 expressionSemantics += s
+             }
         }
         update()
     }

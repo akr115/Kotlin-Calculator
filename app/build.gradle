@@ -38,10 +38,11 @@ android {
 }
 
 dependencies {
-
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha09'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'net.objecthunter:exp4j:0.4.8'
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.0.0'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
